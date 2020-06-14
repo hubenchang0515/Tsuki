@@ -435,6 +435,36 @@ int Renderer::copy(Texture& texture, double angle, Flip flip)
     return ret;
 }
 
+int Renderer::putPixel(int x, int y)
+{
+    if(m_Renderer == nullptr)
+    {
+        throw NullError("SDL_Renderer is nullptr");
+        return -1;
+    }
+    int ret = SDL_RenderDrawPoint(m_Renderer, x, y);
+    if(ret != 0)
+    {
+        throw RenderError("SDL_RenderDrawPoint(%p, %d, %d) : %s", m_Renderer, x, y, SDL_GetError());
+    }
+    return ret;
+}
+
+int Renderer::putPixel(const Point& p)
+{
+    if(m_Renderer == nullptr)
+    {
+        throw NullError("SDL_Renderer is nullptr");
+        return -1;
+    }
+    int ret = SDL_RenderDrawPoint(m_Renderer, p.x, p.y);
+    if(ret != 0)
+    {
+        throw RenderError("SDL_RenderDrawPoint(%p, %d, %d) : %s", m_Renderer, p.x, p.y, SDL_GetError());
+    }
+    return ret;
+}
+
 int Renderer::drawLine(const Point& p1, const Point& p2)
 {
     if(m_Renderer == nullptr)
@@ -467,6 +497,127 @@ int Renderer::drawLine(int x1, int y1, int x2, int y2)
                         m_Renderer, x1, y1, x2, y2, SDL_GetError());
     }
     return ret;
+}
+
+int Renderer::drawEllipse(int x , int y , int rx, int ry)
+{
+    int sq_rx = rx * rx;
+    int sq_ry = ry * ry;
+    
+    int vx = 0;
+    int vy = ry;
+    int d  = 2 * sq_ry - 2 * ry * sq_rx + sq_rx;
+    int p  = (double)sq_rx/sqrt((double)(sq_rx+sq_ry)) + 0.5;
+    m_EllipsePut4Pixel( x, y, vx, vy);
+    while(vx <= p)
+    {
+        if(d < 0)
+        {
+            d += 2 * sq_ry * (2 * vx + 3);
+        }
+        else
+        {
+            d += 2 * sq_ry * (2 * vx + 3) - 4 * sq_rx * (vy - 1);
+            vy--;
+        }
+        vx++;
+        m_EllipsePut4Pixel( x, y, vx, vy);
+    }
+    
+    d = sq_ry * (vx * vx + vx) + sq_rx * (vy * vy - vy) - sq_rx * sq_ry;
+    while(vy >= 0)
+    {
+        m_EllipsePut4Pixel( x, y, vx, vy);
+        vy--;
+        if(d < 0)
+        {
+            vx++;
+            d -= 2 * sq_rx * vy + sq_rx - 2 * sq_ry * vx - 2 * sq_ry;
+        }
+        else
+        {
+            d -= 2 * sq_rx * vy + sq_rx;
+        }
+    }
+    
+    return 0;
+}
+
+int Renderer::fillEllipse(int x , int y , int rx, int ry)
+{
+    int sq_rx = rx * rx;
+    int sq_ry = ry * ry;
+    
+    int vx = 0;
+    int vy = ry;
+    int d  = 2 * sq_ry - 2 * ry * sq_rx + sq_rx;
+    int p  = (double)sq_rx/sqrt((double)(sq_rx+sq_ry)) + 0.5;
+    while(vx < p)
+    {
+        if(d < 0)
+        {
+            d += 2 * sq_ry * (2 * vx + 3);
+        }
+        else
+        {
+            d += 2 * sq_ry * (2 * vx + 3) - 4 * sq_rx * (vy - 1);
+            vy--;
+            drawLine(x + vx, y + vy, x - vx, y + vy);
+            drawLine(x + vx, y - vy, x - vx, y - vy);
+        }
+        vx++;
+    }
+    
+    d = sq_ry * (vx * vx + vx) + sq_rx * (vy * vy - vy) - sq_rx * sq_ry;
+    vy--;
+    while(vy > 0)
+    {
+        drawLine(x + vx, y + vy, x - vx, y + vy);
+        drawLine(x + vx, y - vy, x - vx, y - vy);
+        vy--;
+        if(d < 0)
+        {
+            vx++;
+            d -= 2 * sq_rx * vy + sq_rx - 2 * sq_ry * vx - 2 * sq_ry;
+        }
+        else
+        {
+            d -= 2 * sq_rx * vy + sq_rx;
+        }
+    }
+    drawLine(x + vx, y + vy, x - vx, y + vy);
+    
+    return 0;
+}
+
+int Renderer::drawEllipse(const Point& p, int rx, int ry)
+{
+    return drawEllipse(p.x, p.y, rx, ry);
+}
+
+int Renderer::fillEllipse(const Point& p, int rx, int ry)
+{
+    return fillEllipse(p.x, p.y, rx, ry);
+}
+
+int Renderer::drawCircle(int x , int y , int r)
+{
+    return drawEllipse(x, y, r, r);
+}
+
+int Renderer::drawCircle(const Point& p, int r)
+{
+    return drawEllipse(p.x, p.y, r, r);
+}
+
+int Renderer::fillCircle(int x , int y , int r)
+{
+    return fillEllipse(x, y, r, r);
+}
+
+int Renderer::fillCircle(const Point& p, int r)
+{
+    return fillEllipse(p.x, p.y, r, r);
 }
 
 int Renderer::drawShape(const std::vector<Point>& points)
@@ -514,15 +665,15 @@ int Renderer::fillShape(const std::vector<Point>& points)
     const Point& bottom = *std::max_element(points.begin(), points.end(), higher);
 
     int width, height;
-    std::vector<Renderer::Edge> edges;
+    std::vector<Renderer::M_Edge> edges;
     this->getTargetSize(width, height);
-    this->initEdge(edges, points, height);
-    this->scanHorizontal(std::max(top.y, 0), std::min(bottom.y, height), edges);
+    this->m_InitEdge(edges, points, height);
+    this->m_ScanHorizontal(std::max(top.y, 0), std::min(bottom.y, height), edges);
 
     return 0;
 }
 
-void Renderer::initEdge(std::vector<Renderer::Edge>& edges, const std::vector<Point>& points, int height)
+void Renderer::m_InitEdge(std::vector<Renderer::M_Edge>& edges, const std::vector<Point>& points, int height)
 {
     size_t n = points.size();
     edges.reserve(n);
@@ -553,7 +704,7 @@ void Renderer::initEdge(std::vector<Renderer::Edge>& edges, const std::vector<Po
 }
 
 
-void Renderer::scanHorizontal(int top, int bottom, std::vector<Edge>& edges)
+void Renderer::m_ScanHorizontal(int top, int bottom, std::vector<M_Edge>& edges)
 {
     for(int y = top; y < bottom; y++)
     {
@@ -575,10 +726,20 @@ void Renderer::scanHorizontal(int top, int bottom, std::vector<Edge>& edges)
     }
 }
 
-Renderer::Edge::Edge(int ymin, int ymax, double x, double dx) :
+Renderer::M_Edge::M_Edge(int ymin, int ymax, double x, double dx) :
     ymin(ymin), ymax(ymax), x(x), dx(dx)
 {
 
+}
+
+int Renderer::m_EllipsePut4Pixel(int x, int y, int vx, int vy)
+{
+    putPixel(x + vx, y + vy);
+    putPixel(x + vx, y - vy);
+    putPixel(x - vx, y + vy);
+    putPixel(x - vx, y - vy);
+
+    return 0;
 }
 
 } // namespace Tsuki 

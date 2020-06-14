@@ -19,9 +19,9 @@ Window::Window(const std::string& title, int width, int height, int x, int y)
 Window::~Window()
 {
     if(m_Window == nullptr)
-	{
-		return;
-	}
+    {
+        return;
+    }
 
     SDL_DestroyWindow(m_Window);
 }
@@ -33,36 +33,36 @@ SDL_Window* Window::getRaw() const
 
 GLContext Window::createOpenGLContext() const
 {
-	if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return nullptr;
-	}
-	GLContext ret = SDL_GL_CreateContext(m_Window);
-	if(ret == nullptr)
-	{
-		throw ObjectCreateError("SDL_GL_CreateContext(%p) : %s", m_Window, SDL_GetError());
-	}
-	return ret;
+    if(m_Window == nullptr)
+    {
+        throw NullError("SDL_Window is nullptr");
+        return nullptr;
+    }
+    GLContext ret = SDL_GL_CreateContext(m_Window);
+    if(ret == nullptr)
+    {
+        throw ObjectCreateError("SDL_GL_CreateContext(%p) : %s", m_Window, SDL_GetError());
+    }
+    return ret;
 }
 
 void Window::openGLPresent() const
 {
-	if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
-	SDL_GL_SwapWindow(m_Window);
+    if(m_Window == nullptr)
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
+    SDL_GL_SwapWindow(m_Window);
 }
 
 void Window::setTitle(const std::string& title)
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     SDL_SetWindowTitle(m_Window, title.c_str());
 }
@@ -70,10 +70,10 @@ void Window::setTitle(const std::string& title)
 void Window::getTitle(std::string& title) const
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     title = SDL_GetWindowTitle(m_Window);
 }
@@ -81,10 +81,10 @@ void Window::getTitle(std::string& title) const
 void Window::setSize(int width, int height)
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     SDL_SetWindowSize(m_Window, width, height);
 }
@@ -92,10 +92,10 @@ void Window::setSize(int width, int height)
 void Window::getSize(int& width, int& height) const
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     SDL_GetWindowSize(m_Window, &width, &height);
 }
@@ -103,10 +103,10 @@ void Window::getSize(int& width, int& height) const
 void Window::setPos(int x, int y)
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     SDL_SetWindowPosition(m_Window, x, y);
 }
@@ -114,10 +114,10 @@ void Window::setPos(int x, int y)
 void Window::getPos(int& x, int& y) const
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     SDL_GetWindowPosition(m_Window, &x, &y);
 }
@@ -125,10 +125,10 @@ void Window::getPos(int& x, int& y) const
 void Window::show()
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     SDL_ShowWindow(m_Window);
 }
@@ -136,10 +136,10 @@ void Window::show()
 void Window::hide()
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     SDL_HideWindow(m_Window);
 }
@@ -147,24 +147,24 @@ void Window::hide()
 void Window::focus()
 {
     if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return;
-	}
+    {
+        throw NullError("SDL_Window is nullptr");
+        return;
+    }
 
     SDL_RaiseWindow(m_Window);
 }
 
 MessageBox::Button Window::messageBox(const std::string& title, const std::string& content, MessageBox::Type type)
 {
-	if(m_Window == nullptr)
-	{
-		throw NullError("SDL_Window is nullptr");
-		return MessageBox::Button::None;
-	}
+    if(m_Window == nullptr)
+    {
+        throw NullError("SDL_Window is nullptr");
+        return MessageBox::Button::None;
+    }
 
-	MessageBox mbox("Tsuki::Window");
-	return mbox.show(*this, title, content, type);
-}	
+    MessageBox mbox("Tsuki::Window");
+    return mbox.show(*this, title, content, type);
+}    
 
 } // namespace Tsuki 

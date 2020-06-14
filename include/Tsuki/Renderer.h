@@ -61,28 +61,43 @@ public:
     int copy(Texture& texture, const Rect& src, double angle=0, Flip flip=Flip::None);
     int copy(Texture& texture, double angle=0, Flip flip=Flip::None);
 
+    int putPixel(int x, int y);
+    int putPixel(const Point& p);
+
     int drawLine(const Point& p1, const Point& p2);
     int drawLine(int x1, int y1, int x2, int y2);
     
     int drawShape(const std::vector<Point>& points);
     int fillShape(const std::vector<Point>& points);
 
+    int drawEllipse(int x , int y , int rx, int ry);
+    int fillEllipse(int x , int y , int rx, int ry);
+    int drawEllipse(const Point& p, int rx, int ry);
+    int fillEllipse(const Point& p, int rx, int ry);
+
+    int drawCircle(int x , int y , int r);
+    int drawCircle(const Point& p, int r);
+    int fillCircle(int x , int y , int r);
+    int fillCircle(const Point& p, int r);
+
 private:
     SDL_Renderer* m_Renderer;
 
+    int m_EllipsePut4Pixel(int x, int y, int vx, int vy);
+
     /* 多边形扫描充填算法 */
-    struct Edge
+    struct M_Edge
     {
         int ymin;
         int ymax;
         double x;
         double dx;
 
-        Edge(int ymin, int ymax, double x, double dx);
+        M_Edge(int ymin, int ymax, double x, double dx);
     };
 
-    void initEdge(std::vector<Edge>& edges, const std::vector<Point>& points, int height);
-    void scanHorizontal(int top, int bottom, std::vector<Edge>& edges);
+    void m_InitEdge(std::vector<M_Edge>& edges, const std::vector<Point>& points, int height);
+    void m_ScanHorizontal(int top, int bottom, std::vector<M_Edge>& edges);
 
 };
 
