@@ -3,8 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
-#include "basic.h"
-#include "Event.h"
+#include "Basic.h"
 
 namespace Tsuki 
 {
@@ -22,7 +21,13 @@ public:
         Question,
     };
 
-    using Button = Event::MessageBox::Button;
+    enum class Button
+    {
+        None = 0,
+        Yes,
+        No,
+        Cancel,
+    };
 
     MessageBox(const std::string& name);
     void show(const std::string& title, const std::string& content, Type type=Type::Info);

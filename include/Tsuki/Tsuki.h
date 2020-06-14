@@ -3,14 +3,14 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "basic.h"
-#include "log.hpp"
+#include "Basic.h"
+#include "Log.hpp"
 #include "Exception.hpp"
 #include "Timer.h"
 #include "Window.h"
 #include "Renderer.h"
 #include "Texture.h"
-#include "Event.h"
+#include "Event/Event.h"
 #include "Keyboard.h"
 
 #endif // TSUKI_H 

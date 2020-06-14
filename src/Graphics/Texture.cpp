@@ -1,6 +1,6 @@
 #include <Tsuki/Texture.h>
 #include <Tsuki/Renderer.h>
-#include <Tsuki/log.hpp>
+#include <Tsuki/Log.hpp>
 #include <Tsuki/Exception.hpp>
 
 namespace Tsuki

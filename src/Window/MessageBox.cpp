@@ -1,5 +1,6 @@
 #include <Tsuki/MessageBox.h>
 #include <Tsuki/Window.h>
+#include <Tsuki/Event/EventMessageBox.h>
 
 namespace Tsuki
 {

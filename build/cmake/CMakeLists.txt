@@ -18,21 +18,25 @@ set (CMAKE_CXX_FLAGS   "-std=c++11 -W -Wall -O2" )
 include_directories (../../include )
 
 # build .so
-aux_source_directory ( ../../src/core        CORE_SRC )
-aux_source_directory ( ../../src/event       EVENT_SRC )
-aux_source_directory ( ../../src/exception   EXCEPTION_SRC )
-aux_source_directory ( ../../src/window      WINDOW_SRC )
-aux_source_directory ( ../../src/graphics    GRAPHICS_SRC )
+aux_source_directory ( ../../src/Core        CORE_SRC )
+aux_source_directory ( ../../src/Event       EVENT_SRC )
+aux_source_directory ( ../../src/Exception   EXCEPTION_SRC )
+aux_source_directory ( ../../src/Window      WINDOW_SRC )
+aux_source_directory ( ../../src/Graphics    GRAPHICS_SRC )
 add_library ( Tsuki  SHARED  ${CORE_SRC} ${EVENT_SRC} ${EXCEPTION_SRC} ${WINDOW_SRC} ${GRAPHICS_SRC} )
 set_target_properties(Tsuki   PROPERTIES   LINK_FLAGS   ${SDL2_LIBRARY} )
 set_target_properties(Tsuki   PROPERTIES   LINK_FLAGS   ${SDL2_IMAGE_LIBRARY} )
 
 # install header file
 install(DIRECTORY ../../include/Tsuki DESTINATION include
-        FILES_MATCHING PATTERN "*.h")
+        FILES_MATCHING PATTERN "*.hpp")
 
 install(DIRECTORY ../../include/Tsuki DESTINATION include
-        FILES_MATCHING PATTERN "*.hpp")
+        FILES_MATCHING PATTERN "*.h")
+
+
+
+
 
 # install library
 install(TARGETS Tsuki

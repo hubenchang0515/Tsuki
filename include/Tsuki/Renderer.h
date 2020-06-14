@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "Window.h"
-#include "basic.h"
+#include "Basic.h"
 #include <vector>
 
 namespace Tsuki

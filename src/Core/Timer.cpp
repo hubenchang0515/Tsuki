@@ -1,5 +1,5 @@
 #include <Tsuki/Timer.h>
-#include <Tsuki/Event.h>
+#include <Tsuki/Event/EventTimer.h>
 #include <Tsuki/Exception.hpp>
 #include <string>
 

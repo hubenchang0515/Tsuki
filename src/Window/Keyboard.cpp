@@ -1,5 +1,5 @@
 #include <Tsuki/Keyboard.h>
-#include <Tsuki/log.hpp>
+#include <Tsuki/Log.hpp>
 
 namespace Tsuki
 {

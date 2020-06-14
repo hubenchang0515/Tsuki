@@ -1,7 +1,7 @@
 #ifndef TSUKI_TIMER_H
 #define TSUKI_TIMER_H
 
-#include "basic.h"
+#include "Basic.h"
 #include <string>
 
 namespace Tsuki

@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
-#include "basic.h"
+#include "Basic.h"
 #include "MessageBox.h"
 
 namespace Tsuki 
@@ -26,6 +26,8 @@ public:
     Window(Window&& window) = default;
 
     SDL_Window* getRaw() const;
+    GLContext createOpenGLContext() const;
+    void openGLPresent() const;
 
     void setTitle(const std::string& title);
     void getTitle(std::string& title) const;

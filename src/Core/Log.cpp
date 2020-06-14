@@ -1,4 +1,4 @@
-#include <Tsuki/log.hpp>
+#include <Tsuki/Log.hpp>
 #include <cstring>
 #include <cerrno>
 #include <thread>

@@ -2,7 +2,7 @@
 #define TSUKI_KEYBOARD_H
 
 #include <SDL2/SDL.h>
-#include "basic.h"
+#include "Basic.h"
 
 namespace Tsuki
 {
@@ -15,14 +15,14 @@ public:
 
     Keyboard() = default;
     ~Keyboard() = default;
-    KeyCode keyCode(const char* key);
-    KeyCode keyCode(ScanCode code);
-    ScanCode scanCode(KeyCode code);
-    ScanCode scanCode(const char* key);
+    static KeyCode keyCode(const char* key);
+    static KeyCode keyCode(ScanCode code);
+    static ScanCode scanCode(KeyCode code);
+    static ScanCode scanCode(const char* key);
 
-    bool isPressed(const char* key);
-    bool isPressed(KeyCode code);
-    bool isPressed(ScanCode code);
+    static bool isPressed(const char* key);
+    static bool isPressed(KeyCode code);
+    static bool isPressed(ScanCode code);
 
 private:
 };

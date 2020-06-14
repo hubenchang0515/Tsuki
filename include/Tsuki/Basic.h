@@ -24,6 +24,8 @@ using Point = SDL_Point;
 using Thread = std::thread;
 using Mutex = std::mutex;
 
+using GLContext = SDL_GLContext;
+
 struct Line
 {
     int x1, y1;
