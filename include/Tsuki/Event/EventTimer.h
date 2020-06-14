@@ -1,7 +1,7 @@
 #ifndef TSUKI_EVENT_TIMER_H
 #define TSUKI_EVENT_TIMER_H
 
-#include "Event.h"
+#include "EventBase.h"
 
 namespace Tsuki
 {

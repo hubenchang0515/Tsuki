@@ -14,6 +14,11 @@ bool Event::wait()
     return SDL_WaitEvent(&m_Event) == 1;
 }
 
+bool Event::push()
+{
+    return SDL_PushEvent(&m_Event) == 1;
+}
+
 Event::Type Event::type() const
 {
     return static_cast<Event::Type>(m_Event.type);

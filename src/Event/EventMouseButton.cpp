@@ -36,5 +36,30 @@ void Event::MouseButton::point(int& x, int& y) const
     y = m_Event.y;
 }
 
+bool Event::MouseButton::push(Button button, State state, int x, int y, int clicks)
+{
+    SDL_Event event;
+    if(state == State::Down)
+        event.type = static_cast<uint32_t>(Event::Type::MouseButtonDown);
+    else
+        event.type = static_cast<uint32_t>(Event::Type::MouseButtonUp);
+
+    event.button.button = static_cast<uint8_t>(button);
+    event.button.x = x;
+    event.button.y = y;
+    event.button.clicks = clicks;
+    int ret = SDL_PushEvent(&event);
+    if(ret != 1)
+    {
+        throw EventError("SDL_PushEvent(%p) : %s", &event, SDL_GetError());
+    }
+    return ret == 1;
+}
+
+bool Event::MouseButton::push(Button button, State state, const Point& p, int clicks)
+{
+    return Event::MouseButton::push(button, state, p.x, p.y, clicks);
+}
+
 
 }; // namespace Tsuki

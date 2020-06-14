@@ -8,5 +8,6 @@
 #include "EventMouseMove.h"
 #include "EventMouseWheel.h"
 #include "EventTimer.h"
+#include "EventUser.h"
 
 #endif

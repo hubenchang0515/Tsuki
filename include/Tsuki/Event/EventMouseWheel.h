@@ -1,7 +1,7 @@
 #ifndef TSUKI_EVENT_MOUSEWHEEL_H
 #define TSUKI_EVENT_MOUSEWHEEL_H
 
-#include "Event.h"
+#include "EventBase.h"
 
 namespace Tsuki
 {
@@ -21,6 +21,8 @@ public:
 
     void distance(int& x, int& y) const;
     Direction direction() const;
+
+    static bool push(int x, int y);
 
 private:
     const SDL_MouseWheelEvent& m_Event;

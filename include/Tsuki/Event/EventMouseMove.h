@@ -1,7 +1,7 @@
 #ifndef TSUKI_EVENT_MOUSEMOVE_H
 #define TSUKI_EVENT_MOUSEMOVE_H
 
-#include "Event.h"
+#include "EventBase.h"
 
 namespace Tsuki
 {
@@ -23,6 +23,9 @@ public:
     void point(Point& p) const;
     void point(int& x, int& y) const;
     void delta(int& deltaX, int& deltaY) const;
+
+    static bool push(int x, int y, int deltaX, int deltaY, State state=State::Up);
+    static bool push(const Point& p, int deltaX, int deltaY, State state=State::Up);
 
 private:
     const SDL_MouseMotionEvent& m_Event;

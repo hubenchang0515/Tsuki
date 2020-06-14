@@ -1,7 +1,7 @@
 #ifndef TSUKI_EVENT_MOUSEBUTTON_H
 #define TSUKI_EVENT_MOUSEBUTTON_H
 
-#include "Event.h"
+#include "EventBase.h"
 
 namespace Tsuki
 {
@@ -31,6 +31,9 @@ public:
     int clicks() const;
     void point(Point& p) const;
     void point(int& x, int& y) const;
+
+    static bool push(Button button, State state, int x, int y, int clicks=1);
+    static bool push(Button button, State state, const Point& p, int clicks=1);
 
 private: 
     const SDL_MouseButtonEvent& m_Event;

@@ -1,7 +1,8 @@
 #ifndef TSUKI_EVENT_KEYBOARD_H
 #define TSUKI_EVENT_KEYBOARD_H
 
-#include "Event.h"
+#include "EventBase.h"
+#include "../Keyboard.h"
 
 namespace Tsuki
 {
@@ -14,15 +15,19 @@ public:
         Down = SDL_PRESSED,
         Up = SDL_RELEASED,
     };
+    using KeyCode = Tsuki::Keyboard::KeyCode;
+    using ScanCode = Tsuki::Keyboard::ScanCode;
 
     Keyboard() = delete;
     Keyboard(const Event& event);
     ~Keyboard() = default;
 
-    Tsuki::Keyboard::KeyCode keyCode();
-    Tsuki::Keyboard::ScanCode scanCode();
-
+    KeyCode keyCode();
+    ScanCode scanCode();
     State state() const;
+
+    static bool push(KeyCode keyCode, State state);
+    static bool push(ScanCode scanCode, State state);
 
 private: 
     const SDL_KeyboardEvent& m_Event;

@@ -112,7 +112,18 @@ public:
     virtual ~TimerError() = default;
 };
 
+class EventError : public Exception
+{
+public:
+    template<typename... Types>
+    EventError(Types... args):
+        Exception(args...)
+    {
 
+    }
+
+    virtual ~EventError() = default;
+};
 
 }; //namespace Tsuki
 

@@ -5,7 +5,7 @@
 #include <map>
 #include <functional>
 #include "../Basic.h"
-#include "../Keyboard.h"
+#include "../Exception.hpp"
 
 namespace Tsuki
 {
@@ -24,7 +24,8 @@ public:
         MouseMove = SDL_MOUSEMOTION,
         MouseWheel = SDL_MOUSEWHEEL,
         Timer = SDL_USEREVENT,
-        MessageBox
+        MessageBox,
+        User,
     };
 
     Event() = default;
@@ -32,6 +33,7 @@ public:
 
     bool poll();
     bool wait();
+    bool push();
 
     Event::Type type() const;
     void setHandler(Event::Type type, std::function<void(Event&)> callback);
@@ -44,6 +46,7 @@ public:
     class MouseWheel;
     class Timer;
     class MessageBox;
+    class User;
 
 private:
     SDL_Event m_Event;
