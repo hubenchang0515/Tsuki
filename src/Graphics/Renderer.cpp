@@ -1,7 +1,6 @@
-#include <Tsuki/Renderer.h>
-#include <Tsuki/Texture.h>
-#include <Tsuki/Log.hpp>
-#include <Tsuki/Exception.hpp>
+#include <Tsuki/Graphics/Renderer.h>
+#include <Tsuki/Graphics/Texture.h>
+#include <Tsuki/Exception/Exception.hpp>
 #include <cmath>
 #include <algorithm>
 #include <vector>
@@ -19,7 +18,7 @@ Renderer::Renderer(const Window& window, Renderer::RenderBy by)
     m_Renderer = SDL_CreateRenderer(window.getRaw(), -1, static_cast<uint32_t>(by) | SDL_RENDERER_TARGETTEXTURE);
     if(m_Renderer == nullptr)
     {
-        throw ObjectCreateError("SDL_CreateRenderer(%p, -1, %d) : %s", window.getRaw(), static_cast<int>(by), SDL_GetError());
+        throw RuntimeError("SDL_CreateRenderer(%p, -1, %d) : %s", window.getRaw(), static_cast<int>(by), SDL_GetError());
     }
 }
 
@@ -40,7 +39,7 @@ Renderer::Renderer(const Window* window, Renderer::RenderBy by)
     m_Renderer = SDL_CreateRenderer(window->getRaw(), -1, static_cast<uint32_t>(by) | SDL_RENDERER_TARGETTEXTURE);
     if(m_Renderer == nullptr)
     {
-        throw ObjectCreateError("SDL_CreateRenderer(%p, -1, %d) : %s", window->getRaw(), static_cast<int>(by), SDL_GetError());
+        throw RuntimeError("SDL_CreateRenderer(%p, -1, %d) : %s", window->getRaw(), static_cast<int>(by), SDL_GetError());
     }
 }
 
@@ -71,13 +70,13 @@ bool Renderer::writeImage(const std::string& image)
 
     if(pixels == nullptr)
     {
-        throw MemoryError("malloc(%lu) : %s", static_cast<size_t>(4 * width * height), strerror(errno));
+        throw RuntimeError("malloc(%lu) : %s", static_cast<size_t>(4 * width * height), strerror(errno));
         return false;
     }
 
     if(0 != SDL_RenderReadPixels(m_Renderer, nullptr, SDL_PIXELFORMAT_ARGB8888, pixels, 4*width))
     {
-        throw RenderError("SDL_RenderReadPixels(%p, nullptr, SDL_PIXELFORMAT_ARGB8888, %p, 0) : %s",
+        throw RuntimeError("SDL_RenderReadPixels(%p, nullptr, SDL_PIXELFORMAT_ARGB8888, %p, 0) : %s",
                                 m_Renderer, pixels, SDL_GetError());
         return false;
     }
@@ -86,14 +85,14 @@ bool Renderer::writeImage(const std::string& image)
                                                                 SDL_PIXELFORMAT_ARGB8888);
     if(surface == nullptr)
     {
-        throw RenderError("SDL_CreateRGBSurfaceWithFormatFrom(%p, %d, %d, 32, %d, SDL_PIXELFORMAT_ARGB8888) : %s",
+        throw RuntimeError("SDL_CreateRGBSurfaceWithFormatFrom(%p, %d, %d, 32, %d, SDL_PIXELFORMAT_ARGB8888) : %s",
                 pixels, width, height, 4*width, SDL_GetError());
         return false;
     }
     
     if(0 != SDL_SaveBMP(surface, image.c_str()))
     {
-        throw IOError("SDL_SaveBMP(%p, %s) : %s", surface, image.c_str(), SDL_GetError());
+        throw RuntimeError("SDL_SaveBMP(%p, %s) : %s", surface, image.c_str(), SDL_GetError());
         return false;
     }
     SDL_FreeSurface(surface);
@@ -117,13 +116,13 @@ int Renderer::getColor(Color& color) const
     int ret = SDL_GetRenderDrawColor(m_Renderer, &color.r, &color.g, &color.b, &color.a);
     if(ret != 0)
     {
-        throw RenderError("SDL_GetRenderDrawColor(%p, %p, %p, %p, %p) : %s",
+        throw RuntimeError("SDL_GetRenderDrawColor(%p, %p, %p, %p, %p) : %s",
                         m_Renderer, &color.r, &color.g, &color.b, &color.a, SDL_GetError());
     }
     return ret;
 }
 
-int Renderer::getColor(Uint8& r, Uint8& g, Uint8& b, Uint8& a) const
+int Renderer::getColor(uint8_t& r, uint8_t& g, uint8_t& b, uint8_t& a) const
 {
     if(m_Renderer == nullptr)
     {
@@ -134,7 +133,7 @@ int Renderer::getColor(Uint8& r, Uint8& g, Uint8& b, Uint8& a) const
     int ret = SDL_GetRenderDrawColor(m_Renderer, &r, &g, &b, &a);
     if(ret != 0)
     {
-        throw RenderError("SDL_GetRenderDrawColor(%p, %p, %p, %p, %p) : %s",
+        throw RuntimeError("SDL_GetRenderDrawColor(%p, %p, %p, %p, %p) : %s",
                         m_Renderer, &r, &g, &b, &a, SDL_GetError);
     }
     return ret;
@@ -148,11 +147,11 @@ int Renderer::getColor(uint32_t& rgb) const
         return -1;
     }
 
-    Uint8 r, g, b, a;
+    uint8_t r, g, b, a;
     int ret = SDL_GetRenderDrawColor(m_Renderer, &r, &g, &b, &a);
     if(ret != 0)
     {
-        throw RenderError("SDL_GetRenderDrawColor(%p, %p, %p, %p, %p) : %s",
+        throw RuntimeError("SDL_GetRenderDrawColor(%p, %p, %p, %p, %p) : %s",
                         m_Renderer, &r, &g, &b, &a, SDL_GetError());
     }
     rgb = (r << 16) | (g << 8) | a;
@@ -170,13 +169,13 @@ int Renderer::setColor(const Color& color)
     int ret = SDL_SetRenderDrawColor(m_Renderer, color.r, color.g, color.b, color.a);
     if(ret != 0)
     {
-        throw RenderError("SDL_SetRenderDrawColor(%p, 0x%x, 0x%x, 0x%x, 0x%x) : %s",
+        throw RuntimeError("SDL_SetRenderDrawColor(%p, 0x%x, 0x%x, 0x%x, 0x%x) : %s",
                         m_Renderer, color.r, color.g, color.b, color.a, SDL_GetError());
     }
     return ret;
 }
 
-int Renderer::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+int Renderer::setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
     if(m_Renderer == nullptr)
     {
@@ -187,13 +186,13 @@ int Renderer::setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
     int ret = SDL_SetRenderDrawColor(m_Renderer, r, g, b, a);
     if(ret != 0)
     {
-        throw RenderError("SDL_SetRenderDrawColor(%p, 0x%x, 0x%x, 0x%x, 0x%x) : %s",
+        throw RuntimeError("SDL_SetRenderDrawColor(%p, 0x%x, 0x%x, 0x%x, 0x%x) : %s",
                         m_Renderer, r, g, b, a, SDL_GetError());
     }
     return ret;
 }
 
-int Renderer::setColor(uint32_t rgb, Uint8 a)
+int Renderer::setColor(uint32_t rgb, uint8_t a)
 {
     if(m_Renderer == nullptr)
     {
@@ -201,18 +200,29 @@ int Renderer::setColor(uint32_t rgb, Uint8 a)
         return -1;
     }
 
-    Uint8 r, g, b;
-    r = static_cast<Uint8>((rgb >> 16) & 0xff);
-    g = static_cast<Uint8>((rgb >> 8) & 0xff);
-    b = static_cast<Uint8>(rgb & 0xff);
+    uint8_t r, g, b;
+    r = static_cast<uint8_t>((rgb >> 16) & 0xff);
+    g = static_cast<uint8_t>((rgb >> 8) & 0xff);
+    b = static_cast<uint8_t>(rgb & 0xff);
 
     int ret = SDL_SetRenderDrawColor(m_Renderer, r, g, b, a);
     if(ret != 0)
     {
-        throw RenderError("SDL_SetRenderDrawColor(%p, 0x%x, 0x%x, 0x%x, 0x%x) : %s",
+        throw RuntimeError("SDL_SetRenderDrawColor(%p, 0x%x, 0x%x, 0x%x, 0x%x) : %s",
                         m_Renderer, r, g, b, a, SDL_GetError());
     }
     return ret;
+}
+
+
+int Renderer::setHSVColor(const HSVColor& hsv)
+{
+    return setColor(Convert2RGB(hsv));
+}
+
+int Renderer::setHSVColor(uint8_t h, uint8_t s, uint8_t v, uint8_t a)
+{
+    return setColor(Convert2RGB(HSVColor{h, s, v, a}));
 }
 
 int Renderer::getBlendMode(BlendMode& mode) const
@@ -227,7 +237,7 @@ int Renderer::getBlendMode(BlendMode& mode) const
     int ret = SDL_GetRenderDrawBlendMode(m_Renderer, &_mode);
     if(ret != 0)
     {
-        throw RenderError("SDL_GetRenderDrawBlendMode(%p, %p) : %s", 
+        throw RuntimeError("SDL_GetRenderDrawBlendMode(%p, %p) : %s", 
                         m_Renderer, &_mode, SDL_GetError());
     }
     mode = static_cast<BlendMode>(_mode);
@@ -245,7 +255,7 @@ int Renderer::setBlendMode(BlendMode mode)
     int ret = SDL_SetRenderDrawBlendMode(m_Renderer, static_cast<SDL_BlendMode>(mode));
     if(ret != 0)
     {
-        throw RenderError("SDL_SetRenderDrawBlendMode(%p, %d) : %s", 
+        throw RuntimeError("SDL_SetRenderDrawBlendMode(%p, %d) : %s", 
                         m_Renderer, static_cast<SDL_BlendMode>(mode), SDL_GetError());
     }
     return ret;
@@ -262,7 +272,7 @@ int Renderer::clear()
     int ret = SDL_RenderClear(m_Renderer);
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderClear(%p) : %s", m_Renderer, SDL_GetError());
+        throw RuntimeError("SDL_RenderClear(%p) : %s", m_Renderer, SDL_GetError());
     }
     return ret;
 }
@@ -295,7 +305,7 @@ int Renderer::setTarget(Texture& texture)
     int ret = SDL_SetRenderTarget(m_Renderer, texture.getRaw());
     if(ret != 0)
     {
-        throw RenderError("SDL_SetRenderTarget(%p, %p) : %s", 
+        throw RuntimeError("SDL_SetRenderTarget(%p, %p) : %s", 
                         m_Renderer, texture.getRaw(), SDL_GetError());
     }
     return ret;
@@ -312,7 +322,7 @@ int Renderer::setTarget(Texture* texture)
     int ret = SDL_SetRenderTarget(m_Renderer, texture ? texture->getRaw() : nullptr);
     if(ret != 0)
     {
-        throw RenderError("SDL_SetRenderTarget(%p, %p) : %s", m_Renderer, 
+        throw RuntimeError("SDL_SetRenderTarget(%p, %p) : %s", m_Renderer, 
                             texture ? texture->getRaw() : nullptr, SDL_GetError());
     }
     return ret;
@@ -329,7 +339,7 @@ int Renderer::getTargetSize(int& width, int& height)
     int ret = SDL_GetRendererOutputSize(m_Renderer, &width, &height);
     if(ret != 0)
     {
-        throw RenderError("SDL_GetRendererOutputSize(%p, %p, %p) : %s",
+        throw RuntimeError("SDL_GetRendererOutputSize(%p, %p, %p) : %s",
                         m_Renderer, &width, &height, SDL_GetError());
     }
     return ret;
@@ -353,7 +363,7 @@ int Renderer::copy(const Rect& dst, Texture& texture, const Rect& src, double an
                             angle, nullptr, static_cast<SDL_RendererFlip>(flip));
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderCopyEx(%p, %p, %p, %p, %lf, %p, 0x%x ) : %s",
+        throw RuntimeError("SDL_RenderCopyEx(%p, %p, %p, %p, %lf, %p, 0x%x ) : %s",
                         m_Renderer, texture.getRaw(), &src, &dst, angle, nullptr, 
                         static_cast<uint32_t>(flip), SDL_GetError());
     }
@@ -378,7 +388,7 @@ int Renderer::copy(const Rect& dst, Texture& texture, double angle, Flip flip)
                             nullptr, static_cast<SDL_RendererFlip>(flip));
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderCopyEx(%p, %p, %p, %p, %lf, %p, 0x%x ) : %s",
+        throw RuntimeError("SDL_RenderCopyEx(%p, %p, %p, %p, %lf, %p, 0x%x ) : %s",
                         m_Renderer, texture.getRaw(), nullptr, &dst, angle, nullptr, 
                         static_cast<uint32_t>(flip), SDL_GetError());
     }
@@ -403,7 +413,7 @@ int Renderer::copy(Texture& texture, const Rect& src, double angle, Flip flip)
                             nullptr, static_cast<SDL_RendererFlip>(flip));
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderCopyEx(%p, %p, %p, %p, %lf, %p, 0x%x ) : %s",
+        throw RuntimeError("SDL_RenderCopyEx(%p, %p, %p, %p, %lf, %p, 0x%x ) : %s",
                         m_Renderer, texture.getRaw(), &src, nullptr, angle, nullptr, 
                         static_cast<uint32_t>(flip), SDL_GetError());
     }
@@ -428,7 +438,7 @@ int Renderer::copy(Texture& texture, double angle, Flip flip)
                             nullptr, static_cast<SDL_RendererFlip>(flip));
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderCopyEx(%p, %p, %p, %p, %lf, %p, 0x%x ) : %s",
+        throw RuntimeError("SDL_RenderCopyEx(%p, %p, %p, %p, %lf, %p, 0x%x ) : %s",
                         m_Renderer, texture.getRaw(), nullptr, nullptr, angle, nullptr, 
                         static_cast<uint32_t>(flip), SDL_GetError());
     }
@@ -445,7 +455,7 @@ int Renderer::putPixel(int x, int y)
     int ret = SDL_RenderDrawPoint(m_Renderer, x, y);
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderDrawPoint(%p, %d, %d) : %s", m_Renderer, x, y, SDL_GetError());
+        throw RuntimeError("SDL_RenderDrawPoint(%p, %d, %d) : %s", m_Renderer, x, y, SDL_GetError());
     }
     return ret;
 }
@@ -460,7 +470,7 @@ int Renderer::putPixel(const Point& p)
     int ret = SDL_RenderDrawPoint(m_Renderer, p.x, p.y);
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderDrawPoint(%p, %d, %d) : %s", m_Renderer, p.x, p.y, SDL_GetError());
+        throw RuntimeError("SDL_RenderDrawPoint(%p, %d, %d) : %s", m_Renderer, p.x, p.y, SDL_GetError());
     }
     return ret;
 }
@@ -476,7 +486,7 @@ int Renderer::drawLine(const Point& p1, const Point& p2)
     int ret = SDL_RenderDrawLine(m_Renderer, p1.x, p1.y, p2.x, p2.y);
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderDrawLine(%p, %d, %d, %d, %d) : %s",
+        throw RuntimeError("SDL_RenderDrawLine(%p, %d, %d, %d, %d) : %s",
                         m_Renderer, p1.x, p1.y, p2.x, p2.y, SDL_GetError());
     }
     return ret;
@@ -493,7 +503,7 @@ int Renderer::drawLine(int x1, int y1, int x2, int y2)
     int ret = SDL_RenderDrawLine(m_Renderer, x1, y1, x2, y2);
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderDrawLine(%p, %d, %d, %d, %d) : %s",
+        throw RuntimeError("SDL_RenderDrawLine(%p, %d, %d, %d, %d) : %s",
                         m_Renderer, x1, y1, x2, y2, SDL_GetError());
     }
     return ret;
@@ -631,7 +641,7 @@ int Renderer::drawShape(const std::vector<Point>& points)
     size_t n = points.size();
     if(n < 3)
     {
-        throw RenderError("Renderer::fillShape points count %lu < 3", n);
+        throw RuntimeError("Renderer::fillShape points count %lu < 3", n);
         return -1;
     }
 
@@ -639,7 +649,7 @@ int Renderer::drawShape(const std::vector<Point>& points)
     int ret = SDL_RenderDrawLines(m_Renderer, points.data(), points.size());
     if(ret != 0)
     {
-        throw RenderError("SDL_RenderDrawLines(%p, %p, %lu) : %s", 
+        throw RuntimeError("SDL_RenderDrawLines(%p, %p, %lu) : %s", 
                         m_Renderer, points.data(), points.size(), SDL_GetError());
     }
     return ret;
@@ -656,7 +666,7 @@ int Renderer::fillShape(const std::vector<Point>& points)
     size_t n = points.size();
     if(n < 3)
     {
-        throw RenderError("Renderer::fillShape points count %lu < 3", n);
+        throw RuntimeError("Renderer::fillShape points count %lu < 3", n);
         return -1;
     }
 

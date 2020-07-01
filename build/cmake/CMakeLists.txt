@@ -12,9 +12,10 @@ include(FindPkgConfig)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/find")
 find_package ( SDL2   REQUIRED )
 find_package ( SDL2_image REQUIRED )
+find_package ( Box2D REQUIRED )
 
 # compile flags
-set (CMAKE_CXX_FLAGS   "-std=c++11 -W -Wall -O2" )
+set (CMAKE_CXX_FLAGS   "-std=c++11 -W -Wall -O2 -g" )
 include_directories (../../include )
 
 # build .so
@@ -23,9 +24,13 @@ aux_source_directory ( ../../src/Event       EVENT_SRC )
 aux_source_directory ( ../../src/Exception   EXCEPTION_SRC )
 aux_source_directory ( ../../src/Window      WINDOW_SRC )
 aux_source_directory ( ../../src/Graphics    GRAPHICS_SRC )
-add_library ( Tsuki  SHARED  ${CORE_SRC} ${EVENT_SRC} ${EXCEPTION_SRC} ${WINDOW_SRC} ${GRAPHICS_SRC} )
-set_target_properties(Tsuki   PROPERTIES   LINK_FLAGS   ${SDL2_LIBRARY} )
-set_target_properties(Tsuki   PROPERTIES   LINK_FLAGS   ${SDL2_IMAGE_LIBRARY} )
+aux_source_directory ( ../../src/Physics     PHYSICS_SRC )
+
+add_library ( Tsuki  SHARED  ${CORE_SRC} ${EVENT_SRC} ${EXCEPTION_SRC} ${WINDOW_SRC} ${GRAPHICS_SRC} ${PHYSICS_SRC} )
+
+SET(TSUKI_LINK_FLAGS "${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${BOX2D_LIBRARY}")
+set_target_properties(Tsuki   PROPERTIES   LINK_FLAGS   ${TSUKI_LINK_FLAGS} )
+MESSAGE("TSUKI_LINK_FLAGS = ${TSUKI_LINK_FLAGS}")
 
 # install header file
 install(DIRECTORY ../../include/Tsuki DESTINATION include
@@ -33,10 +38,6 @@ install(DIRECTORY ../../include/Tsuki DESTINATION include
 
 install(DIRECTORY ../../include/Tsuki DESTINATION include
         FILES_MATCHING PATTERN "*.h")
-
-
-
-
 
 # install library
 install(TARGETS Tsuki

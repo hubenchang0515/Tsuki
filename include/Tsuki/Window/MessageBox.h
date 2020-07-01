@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
-#include "Basic.h"
+#include <Tsuki/Core/Basic.h>
 
 namespace Tsuki 
 {

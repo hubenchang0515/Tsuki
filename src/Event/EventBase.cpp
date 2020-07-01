@@ -1,5 +1,5 @@
 #include <Tsuki/Event/Event.h>
-#include <Tsuki/Timer.h>
+#include <Tsuki/Core/Timer.h>
 
 namespace Tsuki
 {

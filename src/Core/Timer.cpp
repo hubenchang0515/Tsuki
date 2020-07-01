@@ -1,6 +1,6 @@
-#include <Tsuki/Timer.h>
+#include <Tsuki/Core/Timer.h>
 #include <Tsuki/Event/EventTimer.h>
-#include <Tsuki/Exception.hpp>
+#include <Tsuki/Exception/Exception.hpp>
 #include <string>
 
 namespace Tsuki
@@ -28,7 +28,7 @@ void Timer::launch()
 {
     if(m_TimerID != 0)
     {
-        throw TimerError("Tsuki::Timer %s is already launched.", m_Name.c_str());
+        throw RuntimeError("Tsuki::Timer %s is already launched.", m_Name.c_str());
         return;
     }
     m_TimerID = SDL_AddTimer(m_Interval, m_PushTimerEvent, static_cast<void*>(this));
@@ -38,7 +38,7 @@ void Timer::stop()
 {
     if(m_TimerID == 0)
     {
-        throw TimerError("Tsuki::Timer %s hasn't been launched.", m_Name.c_str());
+        throw RuntimeError("Tsuki::Timer %s hasn't been launched.", m_Name.c_str());
         return;
     }
     SDL_RemoveTimer(m_TimerID);
@@ -55,21 +55,22 @@ void Timer::delay(uint32_t ms)
     SDL_Delay(ms);
 }
 
-void Timer::delayFps(float fps)
+float Timer::delayFps(float fps)
 {
     uint32_t t = GetTicks();
     uint32_t ms = 1000.0f / fps + 0.5f;
     
-    if(ms + m_Ticks > t)
+    if(ms + m_Ticks >= t)
     {
         SDL_Delay(ms + m_Ticks - t);
         m_Ticks = GetTicks();
+        return fps;
     }
     else
     {
         float realFps = 1000.0f/(t - m_Ticks);
         m_Ticks = GetTicks();
-        throw TimerError("Timer::delayFps real FPS %f < %f", realFps, fps);
+        return realFps;
     }
 }
 

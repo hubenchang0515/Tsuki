@@ -1,7 +1,7 @@
 #ifndef TSUKI_TEXTURE_H
 #define TSUKI_TEXTURE_H
 
-#include "Basic.h"
+#include <Tsuki/Core/Basic.h>
 #include <string>
 
 namespace Tsuki

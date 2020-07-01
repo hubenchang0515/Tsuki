@@ -1,13 +1,14 @@
-#ifndef TSUKI_EVENT_ALL_H
-#define TSUKI_EVENT_ALL_H
+#ifndef TSUKI_EVENT_H
+#define TSUKI_EVENT_H
 
-#include "EventBase.h"
-#include "EventKeyboard.h"
-#include "EventMessageBox.h"
-#include "EventMouseButton.h"
-#include "EventMouseMove.h"
-#include "EventMouseWheel.h"
-#include "EventTimer.h"
-#include "EventUser.h"
+#include <Tsuki/Event/EventBase.h>
+#include <Tsuki/Event/EventQuit.h>
+#include <Tsuki/Event/EventKeyboard.h>
+#include <Tsuki/Event/EventMessageBox.h>
+#include <Tsuki/Event/EventMouseButton.h>
+#include <Tsuki/Event/EventMouseMove.h>
+#include <Tsuki/Event/EventMouseWheel.h>
+#include <Tsuki/Event/EventTimer.h>
+#include <Tsuki/Event/EventUser.h>
 
 #endif

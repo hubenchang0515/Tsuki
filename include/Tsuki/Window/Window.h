@@ -3,8 +3,8 @@
 
 #include <SDL2/SDL.h>
 #include <string>
-#include "Basic.h"
-#include "MessageBox.h"
+#include <Tsuki/Core/Basic.h>
+#include <Tsuki/Window/MessageBox.h>
 
 namespace Tsuki 
 {

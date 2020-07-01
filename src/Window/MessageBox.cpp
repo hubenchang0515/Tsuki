@@ -1,5 +1,5 @@
-#include <Tsuki/MessageBox.h>
-#include <Tsuki/Window.h>
+#include <Tsuki/Window/MessageBox.h>
+#include <Tsuki/Window/Window.h>
 #include <Tsuki/Event/EventMessageBox.h>
 
 namespace Tsuki
@@ -37,7 +37,7 @@ MessageBox::Button MessageBox::m_ShowMessageBox(const char* name, SDL_Window* wi
             { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, static_cast<int>(Button::Cancel), "Cancel" },
         };
 
-        static const SDL_MessageBoxData messageboxdata = {
+        const SDL_MessageBoxData messageboxdata = {
             SDL_MESSAGEBOX_INFORMATION,
             window,
             title,

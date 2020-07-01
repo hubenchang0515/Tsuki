@@ -1,7 +1,6 @@
-#include <Tsuki/Window.h>
-#include <Tsuki/Log.hpp>
-#include <Tsuki/Exception.hpp>
-#include <Tsuki/MessageBox.h>
+#include <Tsuki/Window/Window.h>
+#include <Tsuki/Exception/Exception.hpp>
+#include <Tsuki/Window/MessageBox.h>
 
 namespace Tsuki 
 {
@@ -11,7 +10,7 @@ Window::Window(const std::string& title, int width, int height, int x, int y)
     m_Window = SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if(m_Window == nullptr)
     {
-        throw ObjectCreateError("SDL_CreateWindow(%s, %d, %d, %d, %d, %d) : %s", 
+        throw RuntimeError("SDL_CreateWindow(%s, %d, %d, %d, %d, %d) : %s", 
                 title.c_str(), x, y, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN, SDL_GetError());
     }
 }
@@ -41,7 +40,7 @@ GLContext Window::createOpenGLContext() const
     GLContext ret = SDL_GL_CreateContext(m_Window);
     if(ret == nullptr)
     {
-        throw ObjectCreateError("SDL_GL_CreateContext(%p) : %s", m_Window, SDL_GetError());
+        throw RuntimeError("SDL_GL_CreateContext(%p) : %s", m_Window, SDL_GetError());
     }
     return ret;
 }

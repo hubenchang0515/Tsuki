@@ -2,8 +2,10 @@
 #define TSUKI_RENDERER_H
 
 #include <SDL2/SDL.h>
-#include "Window.h"
-#include "Basic.h"
+#include <Tsuki/Core/Basic.h>
+#include <Tsuki/Window/Window.h>
+#include <Tsuki/Graphics/Color.h>
+#include <Tsuki/Exception/Exception.hpp>
 #include <vector>
 
 namespace Tsuki
@@ -40,11 +42,13 @@ public:
     SDL_Renderer* getRaw() const;
 
     int getColor(Color& color) const;
-    int getColor(Uint8& r, Uint8& g, Uint8& b, Uint8& a) const;
+    int getColor(uint8_t& r, uint8_t& g, uint8_t& b, uint8_t& a) const;
     int getColor(uint32_t& rgb) const;
     int setColor(const Color& color);
-    int setColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a=0xff);
-    int setColor(uint32_t rgb, Uint8 a=0xff);
+    int setColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a=0xff);
+    int setColor(uint32_t rgb, uint8_t a=0xff);
+    int setHSVColor(const HSVColor& hsv);
+    int setHSVColor(uint8_t h, uint8_t s, uint8_t v, uint8_t a=0xff);
 
     int getBlendMode(BlendMode& mode) const;
     int setBlendMode(BlendMode mode);
@@ -79,6 +83,8 @@ public:
     int drawCircle(const Point& p, int r);
     int fillCircle(int x , int y , int r);
     int fillCircle(const Point& p, int r);
+
+    const Color& hsv2rgb(uint32_t h, uint32_t s, uint32_t v);
 
 private:
     SDL_Renderer* m_Renderer;

@@ -1,11 +1,11 @@
-#ifndef TSUKI_EVENT_H
-#define TSUKI_EVENT_H
+#ifndef TSUKI_EVENT_BASE_H
+#define TSUKI_EVENT_BASE_H
 
 #include <SDL2/SDL.h>
 #include <map>
 #include <functional>
-#include "../Basic.h"
-#include "../Exception.hpp"
+#include <Tsuki/Core/Basic.h>
+#include <Tsuki/Exception/Exception.hpp>
 
 namespace Tsuki
 {
@@ -40,6 +40,7 @@ public:
     void solve();
 
     /* Adapters */
+    class Quit;
     class Keyboard;
     class MouseButton;
     class MouseMove;

@@ -1,5 +1,4 @@
-#include <Tsuki/Keyboard.h>
-#include <Tsuki/Log.hpp>
+#include <Tsuki/Window/Keyboard.h>
 
 namespace Tsuki
 {
@@ -26,20 +25,20 @@ Keyboard::ScanCode Keyboard::scanCode(KeyCode code)
 
 bool Keyboard::isPressed(const char* key)
 {
-    const Uint8 *state = SDL_GetKeyboardState(NULL);
+    const uint8_t *state = SDL_GetKeyboardState(NULL);
     Keyboard::ScanCode index = scanCode(key);
     return state[index] == 1;
 }
 
 bool Keyboard::isPressed(KeyCode code)
 {
-    const Uint8 *state = SDL_GetKeyboardState(NULL);
+    const uint8_t *state = SDL_GetKeyboardState(NULL);
     Keyboard::ScanCode index = scanCode(code);
     return state[index] == 1;
 }
 bool Keyboard::isPressed(ScanCode code)
 {
-    const Uint8 *state = SDL_GetKeyboardState(NULL);
+    const uint8_t *state = SDL_GetKeyboardState(NULL);
     return state[code] == 1;
 }
 

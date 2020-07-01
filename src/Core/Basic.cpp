@@ -1,5 +1,4 @@
-#include <Tsuki/Basic.h>
-#include <Tsuki/Log.hpp>
+#include <Tsuki/Core/Basic.h>
 
 namespace Tsuki
 {

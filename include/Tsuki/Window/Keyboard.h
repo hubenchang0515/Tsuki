@@ -2,7 +2,7 @@
 #define TSUKI_KEYBOARD_H
 
 #include <SDL2/SDL.h>
-#include "Basic.h"
+#include <Tsuki/Core/Basic.h>
 
 namespace Tsuki
 {

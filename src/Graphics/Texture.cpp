@@ -1,7 +1,6 @@
-#include <Tsuki/Texture.h>
-#include <Tsuki/Renderer.h>
-#include <Tsuki/Log.hpp>
-#include <Tsuki/Exception.hpp>
+#include <Tsuki/Graphics/Texture.h>
+#include <Tsuki/Graphics/Renderer.h>
+#include <Tsuki/Exception/Exception.hpp>
 
 namespace Tsuki
 {
@@ -17,7 +16,7 @@ Texture::Texture(const Renderer& renderer, int width, int height, uint32_t forma
     m_Texture = SDL_CreateTexture(renderer.getRaw(), format, SDL_TEXTUREACCESS_TARGET, width, height);
     if(m_Texture == nullptr)
     {
-        throw ObjectCreateError("SDL_CreateTexture(%p, %d, SDL_TEXTUREACCESS_TARGET, %d, %d) : %s", 
+        throw RuntimeError("SDL_CreateTexture(%p, %d, SDL_TEXTUREACCESS_TARGET, %d, %d) : %s", 
                 renderer.getRaw(), format, width, height, SDL_GetError());
     }
 }
@@ -39,7 +38,7 @@ Texture::Texture(const Renderer* renderer, int width, int height, uint32_t forma
     m_Texture = SDL_CreateTexture(renderer->getRaw(), format, SDL_TEXTUREACCESS_TARGET, width, height);
     if(m_Texture == nullptr)
     {
-        throw ObjectCreateError("SDL_CreateTexture(%p, %d, SDL_TEXTUREACCESS_TARGET, %d, %d) : %s", 
+        throw RuntimeError("SDL_CreateTexture(%p, %d, SDL_TEXTUREACCESS_TARGET, %d, %d) : %s", 
                 renderer->getRaw(), format, width, height, SDL_GetError());
     }
 }
@@ -54,13 +53,13 @@ Texture::Texture(const Renderer& renderer, const std::string& image)
     SDL_Surface* surface = IMG_Load(image.c_str());
     if(surface == nullptr)
     {
-        throw IOError("IMG_Load(%s) : %s", image.c_str(), SDL_GetError());
+        throw RuntimeError("IMG_Load(%s) : %s", image.c_str(), SDL_GetError());
         return;
     }
     m_Texture = SDL_CreateTextureFromSurface(renderer.getRaw(), surface);
     if(m_Texture == nullptr)
     {
-        throw RenderError("SDL_CreateTextureFromSurface(%p, %p) : %s", 
+        throw RuntimeError("SDL_CreateTextureFromSurface(%p, %p) : %s", 
                 renderer.getRaw(), surface, SDL_GetError());
         return;
     }
@@ -84,13 +83,13 @@ Texture::Texture(const Renderer* renderer, const std::string& image)
     SDL_Surface* surface = IMG_Load(image.c_str());
     if(surface == nullptr)
     {
-        throw IOError("IMG_Load(%s) : %s", image.c_str(), SDL_GetError());
+        throw RuntimeError("IMG_Load(%s) : %s", image.c_str(), SDL_GetError());
         return;
     }
     m_Texture = SDL_CreateTextureFromSurface(renderer->getRaw(), surface);
     if(m_Texture == nullptr)
     {
-        throw ObjectCreateError("SDL_CreateTextureFromSurface(%p, %p) : %s", 
+        throw RuntimeError("SDL_CreateTextureFromSurface(%p, %p) : %s", 
                 renderer->getRaw(), surface, SDL_GetError());
         return;
     }
@@ -121,7 +120,7 @@ int Texture::getSize(int& width, int& height) const
     int ret = SDL_QueryTexture(m_Texture, nullptr, nullptr, &width, &height);
     if(ret != 0)
     {
-        throw IOError("SDL_QueryTexture(%p, %p, %p, %p, %p) : %s",
+        throw RuntimeError("SDL_QueryTexture(%p, %p, %p, %p, %p) : %s",
                     m_Texture, nullptr, nullptr, &width, &height, SDL_GetError());
     }
     return ret;
@@ -138,7 +137,7 @@ int Texture::getFormat(uint32_t& format) const
     int ret = SDL_QueryTexture(m_Texture, &format, nullptr, nullptr, nullptr);
     if(ret != 0)
     {
-        throw IOError("SDL_QueryTexture(%p, %p, %p, %p, %p) : %s",
+        throw RuntimeError("SDL_QueryTexture(%p, %p, %p, %p, %p) : %s",
                     m_Texture, &format, nullptr, nullptr, nullptr, SDL_GetError());
     }
     return ret;

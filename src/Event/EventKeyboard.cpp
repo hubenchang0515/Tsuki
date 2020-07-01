@@ -38,7 +38,7 @@ bool Event::Keyboard::push(KeyCode keyCode, State state)
     int ret = SDL_PushEvent(&event);
     if(ret != 1)
     {
-        throw EventError("SDL_PushEvent(%p) : %s", &event, SDL_GetError());
+        throw RuntimeError("SDL_PushEvent(%p) : %s", &event, SDL_GetError());
     }
     return ret == 1;
 }
@@ -57,7 +57,7 @@ bool Event::Keyboard::push(ScanCode scanCode, State state)
     int ret = SDL_PushEvent(&event);
     if(ret != 1)
     {
-        throw EventError("SDL_PushEvent(%p) : %s", &event, SDL_GetError());
+        throw RuntimeError("SDL_PushEvent(%p) : %s", &event, SDL_GetError());
     }
     return ret == 1;
 }

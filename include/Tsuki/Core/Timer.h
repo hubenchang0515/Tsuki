@@ -1,8 +1,9 @@
 #ifndef TSUKI_TIMER_H
 #define TSUKI_TIMER_H
 
-#include "Basic.h"
+#include <Tsuki/Core/Basic.h>
 #include <string>
+#include <Tsuki/Exception/Exception.hpp>
 
 namespace Tsuki
 {
@@ -19,7 +20,7 @@ public:
 
     static uint32_t GetTicks();
     static void delay(uint32_t ms);
-    void delayFps(float fps);
+    float delayFps(float fps);
 
 
 private:

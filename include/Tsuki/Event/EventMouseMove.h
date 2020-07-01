@@ -1,7 +1,8 @@
 #ifndef TSUKI_EVENT_MOUSEMOVE_H
 #define TSUKI_EVENT_MOUSEMOVE_H
 
-#include "EventBase.h"
+#include <Tsuki/Core/Basic.h>
+#include <Tsuki/Event/EventBase.h>
 
 namespace Tsuki
 {

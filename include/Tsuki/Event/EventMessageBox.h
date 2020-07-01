@@ -1,8 +1,8 @@
 #ifndef TSUKI_EVENT_MESSAGEBOX_H
 #define TSUKI_EVENT_MESSAGEBOX_H
 
-#include "EventBase.h"
-#include "../MessageBox.h"
+#include <Tsuki/Event/EventBase.h>
+#include <Tsuki/Window/MessageBox.h>
 
 namespace Tsuki
 {

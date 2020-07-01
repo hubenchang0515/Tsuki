@@ -29,7 +29,7 @@ bool Event::MouseWheel::push(int x, int y)
     int ret = SDL_PushEvent(&event);
     if(ret != 1)
     {
-        throw EventError("SDL_PushEvent(%p) : %s", &event, SDL_GetError());
+        throw RuntimeError("SDL_PushEvent(%p) : %s", &event, SDL_GetError());
     }
     return ret == 1;
 }

@@ -1,8 +1,9 @@
 #ifndef TSUKI_EVENT_KEYBOARD_H
 #define TSUKI_EVENT_KEYBOARD_H
 
-#include "EventBase.h"
-#include "../Keyboard.h"
+#include <Tsuki/Core/Basic.h>
+#include <Tsuki/Event/EventBase.h>
+#include <Tsuki/Window/Keyboard.h>
 
 namespace Tsuki
 {

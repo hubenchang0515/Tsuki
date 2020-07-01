@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <Box2D/Box2D.h>
 #include <thread>
 #include <mutex>
 #include <cstdint>
@@ -17,7 +18,6 @@ bool TsukiInit(int argc = 0, char** argv = nullptr);
 void TsukiQuit();
 void TsukiDelay(uint32_t ms);
 
-using Color = SDL_Color;
 using Rect = SDL_Rect;
 using Point = SDL_Point;
 
