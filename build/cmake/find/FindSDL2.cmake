@@ -220,7 +220,7 @@ SET(SDL2_FOUND "NO")
 		# For SDL2main
 		IF(NOT SDL2_BUILDING_LIBRARY)
 			IF(SDL2MAIN_LIBRARY)
-				SET(SDL2_LIBRARY_TEMP "${SDL2MAIN_LIBRARY} ${SDL2_LIBRARY_TEMP}")
+				SET(SDL2_LIBRARY_TEMP "${SDL2MAIN_LIBRARY}" "${SDL2_LIBRARY_TEMP}")
 			ENDIF(SDL2MAIN_LIBRARY)
 		ENDIF(NOT SDL2_BUILDING_LIBRARY)
 
@@ -231,19 +231,19 @@ SET(SDL2_FOUND "NO")
 		# So I use a temporary variable until the end so I can set the
 		# "real" variable in one-shot.
 		IF(APPLE)
-			SET(SDL2_LIBRARY_TEMP "${SDL2_LIBRARY_TEMP} -framework Cocoa")
+			SET(SDL2_LIBRARY_TEMP "${SDL2_LIBRARY_TEMP}" "-framework Cocoa")
 		ENDIF(APPLE)
 
 		# For threads, as mentioned Apple doesn't need this.
 		# In fact, there seems to be a problem if I used the Threads package
 		# and try using this line, so I'm just skipping it entirely for OS X.
 		IF(NOT APPLE)
-			SET(SDL2_LIBRARY_TEMP "${SDL2_LIBRARY_TEMP} ${CMAKE_THREAD_LIBS_INIT}")
+			SET(SDL2_LIBRARY_TEMP "${SDL2_LIBRARY_TEMP}" "${CMAKE_THREAD_LIBS_INIT}")
 		ENDIF(NOT APPLE)
 
 		# For MinGW library
 		IF(MINGW)
-			SET(SDL2_LIBRARY_TEMP "${MINGW32_LIBRARY} ${SDL2_LIBRARY_TEMP}")
+			SET(SDL2_LIBRARY_TEMP "${MINGW32_LIBRARY}" "${SDL2_LIBRARY_TEMP}")
 		ENDIF(MINGW)
 
 		# Set the final string here so the GUI reflects the final state.
