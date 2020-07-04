@@ -74,11 +74,11 @@ void Body::setPosition(const Vec2& pos)
         return;
     }
     
-    float32 angle = m_Body->GetAngle();
+    float angle = m_Body->GetAngle();
     m_Body->SetTransform(pos, angle);
 }
 
-float32 Body::angle()
+float Body::angle()
 {
     if(m_Body == nullptr)
     {
@@ -88,7 +88,7 @@ float32 Body::angle()
     return m_Body->GetAngle();
 }
 
-void Body::setAngle(float32 angle)
+void Body::setAngle(float angle)
 {
     if(m_Body == nullptr)
     {
@@ -99,46 +99,46 @@ void Body::setAngle(float32 angle)
     m_Body->SetTransform(m_Body->GetPosition(), angle);
 }
 
-float32 Body::density()
+float Body::density()
 {
     b2Fixture* fixture = m_Fixture();
     return fixture->GetDensity();
 }
 
-void Body::setDensity(float32 density)
+void Body::setDensity(float density)
 {
     b2Fixture* fixture = m_Fixture();
     fixture->SetDensity(density);
     m_Body->ResetMassData();
 }
 
-float32 Body::friction()
+float Body::friction()
 {
     b2Fixture* fixture = m_Fixture();
     return fixture->GetFriction();
 }
 
-void Body::setFriction(float32 friction)
+void Body::setFriction(float friction)
 {
     b2Fixture* fixture = m_Fixture();
     fixture->SetFriction(friction);
     m_Body->ResetMassData();
 }
 
-float32 Body::restitution()
+float Body::restitution()
 {
     b2Fixture* fixture = m_Fixture();
     return fixture->GetRestitution();
 }
 
-void Body::setRestitution(float32 restitution)
+void Body::setRestitution(float restitution)
 {
     b2Fixture* fixture = m_Fixture();
     fixture->SetRestitution(restitution);
     m_Body->ResetMassData();
 }
 
-void Body::setAsBox(float32 halfWidth, float32 halfHeight)
+void Body::setAsBox(float halfWidth, float halfHeight)
 {
     b2PolygonShape* shape = m_PolygonShape();
     shape->SetAsBox(halfWidth, halfHeight);
@@ -165,12 +165,12 @@ void Body::setVertex(const std::vector<Vec2>& vertex)
 void Body::getVertex(std::vector<Vec2>& vertex)
 {
     b2PolygonShape* shape = m_PolygonShape();
-    size_t len = shape->GetVertexCount();
+    size_t len = shape->m_count;
     vertex.resize(0);
     vertex.reserve(len);
     for(size_t i = 0; i < len; i++)
     {
-        b2Vec2 p = shape->GetVertex(i);
+        b2Vec2 p = shape->m_vertices[i];
         p = m_Body->GetWorldPoint(p);
         vertex.push_back(p);
     }
@@ -210,7 +210,7 @@ void Body::m_CreatePolygonBody(const b2Vec2* points, size_t len)
     {
         throw RuntimeError("PolygonBody vectex %p count %lu < 3", points, len);
     }
-    float32 angle {0};
+    float angle {0};
     b2Vec2 pos {0,0};
     if(m_Body != nullptr)
     {

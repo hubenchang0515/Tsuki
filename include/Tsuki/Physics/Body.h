@@ -40,18 +40,18 @@ public:
     void getPosition(Vec2& pos);
     void setPosition(const Vec2& pos);
 
-    float32 angle();
-    void setAngle(float32 angle);
+    float angle();
+    void setAngle(float angle);
 
-    float32 density();
-    void setDensity(float32 density);
-    float32 friction();
-    void setFriction(float32 friction);
-    float32 restitution();
-    void setRestitution(float32 restitution);
+    float density();
+    void setDensity(float density);
+    float friction();
+    void setFriction(float friction);
+    float restitution();
+    void setRestitution(float restitution);
 
     /* Polygon Shape */
-    void setAsBox(float32 halfWidth, float32 halfHeight);
+    void setAsBox(float halfWidth, float halfHeight);
     void setVertex(const std::vector<Vec2>& vertex);
     void getVertex(std::vector<Vec2>& vertex);
 
@@ -62,9 +62,9 @@ private:
 
 private:
     Type m_Type;
-    float32 m_Density;
-    float32 m_Friction;
-    float32 m_Restitution;
+    float m_Density;
+    float m_Friction;
+    float m_Restitution;
     World& m_World;
     Shape m_Shape;
     b2Body* m_Body;

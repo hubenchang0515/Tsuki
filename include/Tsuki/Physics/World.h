@@ -16,7 +16,7 @@ public:
 
     b2World* getRaw();
 
-    void update(float32 mSecond);
+    void update(float mSecond);
     void setIterations(int32_t velocity, uint32_t position);
     int32_t velocityIterations();
     int32_t positionIterations();

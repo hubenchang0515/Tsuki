@@ -1,6 +1,7 @@
 #include <Tsuki/Graphics/Color.h>
 #include <Tsuki/Exception/Exception.hpp>
 #include <algorithm>
+#include <cmath>
 
 namespace Tsuki
 {

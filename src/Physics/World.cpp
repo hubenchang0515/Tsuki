@@ -26,7 +26,7 @@ b2World* World::getRaw()
     return &m_World;
 }
 
-void World::update(float32 millisecond)
+void World::update(float millisecond)
 {
     m_World.Step(millisecond, m_VelocityIterations, m_PositionIterations);
 }

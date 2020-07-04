@@ -107,6 +107,8 @@ FIND_PATH(SDL2_INCLUDE_DIR SDL.h
 	HINTS
 	${SDL2}
 	$ENV{SDL2}
+	$ENV{C_INCLUDE_PATH}
+	$ENV{CPLUS_INCLUDE_PATH}
 	PATH_SUFFIXES include/SDL2 include SDL2
 	i686-w64-mingw32/include/SDL2
 	x86_64-w64-mingw32/include/SDL2
@@ -142,6 +144,7 @@ ELSE(CMAKE_SIZEOF_VOID_P EQUAL 8)
 		HINTS
 		${SDL2}
 		$ENV{SDL2}
+		$ENV{LIBRARY_PATH}
 		PATH_SUFFIXES lib
 		lib/x86
 		i686-w64-mingw32/lib
@@ -166,6 +169,7 @@ IF(NOT SDL2_BUILDING_LIBRARY)
 				HINTS
 				${SDL2}
 				$ENV{SDL2}
+				$ENV{LIBRARY_PATH}
 				PATH_SUFFIXES lib64 lib
 				lib/x64
 				x86_64-w64-mingw32/lib
@@ -182,6 +186,7 @@ IF(NOT SDL2_BUILDING_LIBRARY)
 				HINTS
 				${SDL2}
 				$ENV{SDL2}
+				$ENV{LIBRARY_PATH}
 				PATH_SUFFIXES lib
 				lib/x86
 				i686-w64-mingw32/lib
@@ -207,7 +212,7 @@ ENDIF(NOT APPLE)
 # It's total link flags should look like -lmingw32 -lSDL2main -lSDL2 -lmwindows
 # (Actually on second look, I think it only needs one of the m* libraries.)
 IF(MINGW)
-	SET(MINGW32_LIBRARY mingw32 CACHE STRING "mwindows for MinGW")
+	SET(MINGW32_LIBRARY -lmingw32 CACHE STRING "mwindows for MinGW")
 ENDIF(MINGW)
 
 SET(SDL2_FOUND "NO")

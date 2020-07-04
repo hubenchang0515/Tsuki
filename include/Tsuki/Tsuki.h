@@ -21,4 +21,9 @@
 
 #include <Tsuki/Physics/World.h>
 #include <Tsuki/Physics/Body.h>
+
+#if defined(main) && !defined(SDL_MAIN_NEEDED)
+#   undef main
+#endif
+
 #endif // TSUKI_H 

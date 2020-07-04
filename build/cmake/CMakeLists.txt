@@ -26,10 +26,11 @@ aux_source_directory ( ../../src/Window      WINDOW_SRC )
 aux_source_directory ( ../../src/Graphics    GRAPHICS_SRC )
 aux_source_directory ( ../../src/Physics     PHYSICS_SRC )
 
-add_library ( Tsuki  SHARED  ${CORE_SRC} ${EVENT_SRC} ${EXCEPTION_SRC} ${WINDOW_SRC} ${GRAPHICS_SRC} ${PHYSICS_SRC} )
+ADD_LIBRARY( Tsuki  SHARED  ${CORE_SRC} ${EVENT_SRC} ${EXCEPTION_SRC} ${WINDOW_SRC} ${GRAPHICS_SRC} ${PHYSICS_SRC} )
 
 SET(TSUKI_LINK_FLAGS "${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${BOX2D_LIBRARY}")
-set_target_properties(Tsuki   PROPERTIES   LINK_FLAGS   ${TSUKI_LINK_FLAGS} )
+STRING(STRIP "${TSUKI_LINK_FLAGS}" TSUKI_LINK_FLAGS)
+TARGET_LINK_LIBRARIES(Tsuki ${TSUKI_LINK_FLAGS} )
 MESSAGE("TSUKI_LINK_FLAGS = ${TSUKI_LINK_FLAGS}")
 
 # install header file
