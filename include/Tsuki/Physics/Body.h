@@ -11,6 +11,9 @@ namespace Tsuki
 class Body
 {
 public:
+    static Body createPolygonBody(const std::vector<Vec2>& vertex);
+    static Body createCircleBody(const Vec2& center, float radius);
+
     enum class Type
     {
         Static = b2_staticBody,
@@ -26,7 +29,7 @@ public:
         Chain = b2Shape::e_chain,
     };
 
-    Body(World& world, Type type=Type::Static);
+    Body(World& world, Shape shape, Type type=Type::Static);
     Body(const Body& body) = delete;
     ~Body();
 
@@ -43,6 +46,9 @@ public:
     float angle();
     void setAngle(float angle);
 
+    float radius();
+    void setRadius(float radius);
+
     float density();
     void setDensity(float density);
     float friction();
@@ -57,8 +63,18 @@ public:
 
 private:
     b2Fixture* m_Fixture();
+
     b2PolygonShape* m_PolygonShape();
-    void m_CreatePolygonBody(const b2Vec2* points, size_t len);
+    void m_CreatePolygonBody(const std::vector<Vec2>& points);
+
+    b2CircleShape* m_CircleShape();
+    void m_CreateCircleBody(const b2Vec2& center, float radius);
+
+    b2ChainShape* m_ChainShape();
+    void m_CreateChainBody(const std::vector<Vec2> points);
+
+    b2EdgeShape* m_EdgeShape();
+    void m_CreateEdgeBody(const b2Vec2& p1, const b2Vec2& p2);
 
 private:
     Type m_Type;

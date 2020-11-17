@@ -23,7 +23,7 @@ public:
 
 private:
     Vec2 m_Gravity;
-    b2World m_World;
+    b2World* m_World;
     int32_t m_VelocityIterations;
     int32_t m_PositionIterations;
 };

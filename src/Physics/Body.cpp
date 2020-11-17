@@ -4,15 +4,32 @@
 namespace Tsuki
 {
 
-Body::Body(World& world, Type type):
+Body::Body(World& world, Shape shape, Type type):
     m_Type(type),
     m_Density(1.0f),
     m_Friction(1.0f),
     m_Restitution(0.0f),
     m_World(world),
+    m_Shape(shape),
     m_Body(nullptr)
 {
-    m_CreatePolygonBody(nullptr, 0);
+    switch(shape)
+    {
+        case Shape::Polygon:
+            m_CreatePolygonBody({{0.0f, 0.0f}, {1.0f, 0.0f}, {1.1f, 1.0f}, {0.0f, 1.0f}});
+            break;
+
+        case Shape::Circle:
+            m_CreateCircleBody({0.0f, 0.0f}, 1.0f);
+            break;
+
+        case Shape::Chain:
+
+        case Shape::Edge:
+
+        default:
+            throw RuntimeError("Unknown shape of body %d", shape);
+    }
 }
 
 Body::~Body()
@@ -99,6 +116,19 @@ void Body::setAngle(float angle)
     m_Body->SetTransform(m_Body->GetPosition(), angle);
 }
 
+float Body::radius()
+{
+    b2CircleShape* shape = m_CircleShape();
+    return shape->m_radius;
+}
+
+void Body::setRadius(float radius)
+{
+    b2CircleShape* shape = m_CircleShape();
+    shape->m_radius = radius;
+    m_Body->ResetMassData();
+}
+
 float Body::density()
 {
     b2Fixture* fixture = m_Fixture();
@@ -143,13 +173,6 @@ void Body::setAsBox(float halfWidth, float halfHeight)
     b2PolygonShape* shape = m_PolygonShape();
     shape->SetAsBox(halfWidth, halfHeight);
     m_Body->ResetMassData();
-
-    // std::vector<b2Vec2> points;
-    // points.emplace_back(-halfWidth, -halfHeight);
-    // points.emplace_back(halfWidth, -halfHeight);
-    // points.emplace_back(halfWidth, halfHeight);
-    // points.emplace_back(-halfWidth, halfHeight);
-    // m_CreatePolygonBody(points.data(), points.size());
 }
 
 void Body::setVertex(const std::vector<Vec2>& vertex)
@@ -157,9 +180,6 @@ void Body::setVertex(const std::vector<Vec2>& vertex)
     b2PolygonShape* shape = m_PolygonShape();
     shape->Set(vertex.data(), vertex.size());
     m_Body->ResetMassData();
-
-    // size_t len = vertex.size();
-    // m_CreatePolygonBody(vertex.data(), len);
 }
 
 void Body::getVertex(std::vector<Vec2>& vertex)
@@ -204,31 +224,14 @@ b2PolygonShape* Body::m_PolygonShape()
     return dynamic_cast<b2PolygonShape*>(m_Body->GetFixtureList()[0].GetShape());
 }
 
-void Body::m_CreatePolygonBody(const b2Vec2* points, size_t len)
+void Body::m_CreatePolygonBody(const std::vector<Vec2>& points)
 {
-    if(points != nullptr && len < 3)
+    if(points.size() < 3)
     {
-        throw RuntimeError("PolygonBody vectex %p count %lu < 3", points, len);
+        throw RuntimeError("PolygonBody vectex count %lu < 3", points.size());
     }
-    float angle {0};
-    b2Vec2 pos {0,0};
-    if(m_Body != nullptr)
-    {
-        angle = m_Body->GetAngle();
-        pos = m_Body->GetPosition();
-        m_World.getRaw()->DestroyBody(m_Body);
-    }
-
     b2PolygonShape shape;
-    if(points != nullptr && len >= 3)
-    {
-        shape.Set(points, len);
-    }
-    else
-    {
-        shape.SetAsBox(1.0f, 1.0f);
-    }
-    
+    shape.Set(points.data(), points.size());
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
     fixtureDef.density = m_Density;
@@ -236,8 +239,6 @@ void Body::m_CreatePolygonBody(const b2Vec2* points, size_t len)
     fixtureDef.restitution = m_Restitution;
 
     b2BodyDef bodyDef;
-    bodyDef.angle = angle;
-    bodyDef.position = pos;
     bodyDef.type = static_cast<b2BodyType>(m_Type);
     m_Body = m_World.getRaw()->CreateBody(&bodyDef);
     m_Body->CreateFixture(&fixtureDef);
@@ -247,6 +248,46 @@ void Body::m_CreatePolygonBody(const b2Vec2* points, size_t len)
         return;
     }
     m_Shape = Shape::Polygon;
+}
+
+b2CircleShape* Body::m_CircleShape()
+{
+    if(m_Body == nullptr || m_Body->GetFixtureList() == nullptr || m_Body->GetFixtureList()[0].GetShape() == nullptr)
+    {
+        throw NullError("b2Body or b2Fixture or b2Shape is nullptr");
+        return nullptr;
+    }
+
+    if(m_Shape != Shape::Circle || m_Body->GetFixtureList()[0].GetShape()->GetType() != b2Shape::e_circle)
+    {
+        throw RuntimeError("Shape type %d is not Shape::Type::Polygon", static_cast<int>(m_Shape));
+        return nullptr;
+    }
+
+    return dynamic_cast<b2CircleShape*>(m_Body->GetFixtureList()[0].GetShape());
+}
+
+void Body::m_CreateCircleBody(const b2Vec2& center, float radius)
+{
+    b2CircleShape shape;
+    shape.m_p = center;
+    shape.m_radius = radius;
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &shape;
+    fixtureDef.density = m_Density;
+    fixtureDef.friction = m_Friction;
+    fixtureDef.restitution = m_Restitution;
+
+    b2BodyDef bodyDef;
+    bodyDef.type = static_cast<b2BodyType>(m_Type);
+    m_Body = m_World.getRaw()->CreateBody(&bodyDef);
+    m_Body->CreateFixture(&fixtureDef);
+    if(m_Body == nullptr)
+    {
+        throw NullError("b2Body is nullptr");
+        return;
+    }
+    m_Shape = Shape::Circle;
 }
 
 }; // namespace Tsuki
