@@ -36,8 +36,9 @@ public:
     bool push();
 
     Event::Type type() const;
+    void setHandler(Event::Type type, std::function<void(void)> callback);
     void setHandler(Event::Type type, std::function<void(Event&)> callback);
-    void solve();
+    void dispatch();
 
     /* Adapters */
     class Quit;

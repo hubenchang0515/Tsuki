@@ -16,7 +16,7 @@ public:
     MessageBox(const Event& event);
     ~MessageBox() = default;
 
-    const std::string name();
+    const std::string& name();
     Button button();
 
 private:

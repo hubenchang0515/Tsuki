@@ -30,7 +30,6 @@ public:
         Both = SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL,
     };
 
-    explicit Renderer(const Window& window, RenderBy by=RenderBy::CPU);
     explicit Renderer(const Window* window, RenderBy by=RenderBy::CPU);
     Renderer(const Renderer&) = delete;
     Renderer(Renderer&&) = default;

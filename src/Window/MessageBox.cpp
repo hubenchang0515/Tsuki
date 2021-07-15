@@ -1,11 +1,12 @@
 #include <Tsuki/Window/MessageBox.h>
 #include <Tsuki/Window/Window.h>
 #include <Tsuki/Event/EventMessageBox.h>
+#include <Tsuki/Core/Log.hpp>
 
 namespace Tsuki
 {
 
-MessageBox::MessageBox(const std::string& name) :
+MessageBox::MessageBox(const std::string& name) noexcept:
     m_Name(name)
 {
 
@@ -13,20 +14,20 @@ MessageBox::MessageBox(const std::string& name) :
 
 void MessageBox::show(const std::string& title, const std::string& content, Type type)
 {
-    Thread th(m_ShowMessageBox, m_Name.c_str(), nullptr, title.c_str(), content.c_str(), type);
+    Thread th(m_ShowMessageBox, m_Name, nullptr, title, content, type);
     th.detach(); 
 }
 
-MessageBox::Button MessageBox::show(const Window& window, const std::string& title, const std::string& content, Type type)
+MessageBox::Button MessageBox::show(const Window* window, const std::string& title, const std::string& content, Type type)
 {
-    return m_ShowMessageBox(m_Name.c_str(), window.getRaw(), title.c_str(), content.c_str(), type); 
+    return m_ShowMessageBox(m_Name, window->getRaw(), title, content, type); 
 }
 
-MessageBox::Button MessageBox::m_ShowMessageBox(const char* name, SDL_Window* window, const char* title, const char* content, Type type)
+MessageBox::Button MessageBox::m_ShowMessageBox(const std::string& name, SDL_Window* window, const std::string& title, const std::string& content, Type type)
 {
     if(type < Type::Question)
     {
-        SDL_ShowSimpleMessageBox(static_cast<uint32_t>(type), title, content, window);
+        SDL_ShowSimpleMessageBox(static_cast<uint32_t>(type), title.c_str(), content.c_str(), window);
         return MessageBox::Button::None;
     }
     else
@@ -40,8 +41,8 @@ MessageBox::Button MessageBox::m_ShowMessageBox(const char* name, SDL_Window* wi
         const SDL_MessageBoxData messageboxdata = {
             SDL_MESSAGEBOX_INFORMATION,
             window,
-            title,
-            content,
+            title.c_str(),
+            content.c_str(),
             3, 
             buttons,
             nullptr
@@ -52,8 +53,8 @@ MessageBox::Button MessageBox::m_ShowMessageBox(const char* name, SDL_Window* wi
 
         SDL_Event event;
         event.type = static_cast<uint32_t>(Event::Type::MessageBox);
-        event.user.data2 = const_cast<void*>(reinterpret_cast<const void*>(name));
-        event.user.data1 = reinterpret_cast<void*>(buttonID);
+        event.user.data1 = const_cast<void*>(reinterpret_cast<const void*>(&name));
+        event.user.data2 = reinterpret_cast<void*>(buttonID);
         SDL_PushEvent(&event);
         return static_cast<MessageBox::Button>(buttonID);
     }

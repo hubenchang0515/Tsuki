@@ -29,14 +29,14 @@ public:
         Cancel,
     };
 
-    MessageBox(const std::string& name);
+    MessageBox(const std::string& name) noexcept;
     void show(const std::string& title, const std::string& content, Type type=Type::Info);
-    Button show(const Window& window, const std::string& title, const std::string& content, Type type=Type::Info);
+    Button show(const Window* window, const std::string& title, const std::string& content, Type type=Type::Info);
 
 
 private:
     std::string m_Name;
-    static Button m_ShowMessageBox(const char* name, SDL_Window* window, const char* title, const char* content, Type type);
+    static Button m_ShowMessageBox(const std::string& name, SDL_Window* window, const std::string& title, const std::string& content, Type type);
 };
 
 }; // namespace Tsuki

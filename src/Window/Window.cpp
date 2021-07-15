@@ -163,7 +163,7 @@ MessageBox::Button Window::messageBox(const std::string& title, const std::strin
     }
 
     MessageBox mbox("Tsuki::Window");
-    return mbox.show(*this, title, content, type);
+    return mbox.show(this, title, content, type);
 }    
 
 } // namespace Tsuki 

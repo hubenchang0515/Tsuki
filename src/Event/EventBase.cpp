@@ -24,12 +24,17 @@ Event::Type Event::type() const
     return static_cast<Event::Type>(m_Event.type);
 }
 
+void Event::setHandler(Event::Type type, std::function<void(void)> callback)
+{
+    m_Handlers[type] = [&callback](Event&){callback();};
+}
+
 void Event::setHandler(Event::Type type, std::function<void(Event&)> callback)
 {
     m_Handlers[type] = callback;
 }
 
-void Event::solve()
+void Event::dispatch()
 {
     while(this->poll())
     {

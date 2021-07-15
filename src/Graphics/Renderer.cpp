@@ -8,20 +8,6 @@
 namespace Tsuki
 {
 
-Renderer::Renderer(const Window& window, Renderer::RenderBy by)
-{
-    if(window.getRaw() == nullptr)
-    {
-        throw NullError("SDL_Window is nullptr");
-        return;
-    }
-    m_Renderer = SDL_CreateRenderer(window.getRaw(), -1, static_cast<uint32_t>(by) | SDL_RENDERER_TARGETTEXTURE);
-    if(m_Renderer == nullptr)
-    {
-        throw RuntimeError("SDL_CreateRenderer(%p, -1, %d) : %s", window.getRaw(), static_cast<int>(by), SDL_GetError());
-    }
-}
-
 Renderer::Renderer(const Window* window, Renderer::RenderBy by)
 {
     if(window == nullptr)
@@ -41,6 +27,9 @@ Renderer::Renderer(const Window* window, Renderer::RenderBy by)
     {
         throw RuntimeError("SDL_CreateRenderer(%p, -1, %d) : %s", window->getRaw(), static_cast<int>(by), SDL_GetError());
     }
+
+    clear();
+    present();
 }
 
 Renderer::~Renderer()
