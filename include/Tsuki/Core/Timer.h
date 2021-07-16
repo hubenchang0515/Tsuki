@@ -8,14 +8,22 @@
 namespace Tsuki
 {
 
+class Timer;
+
+struct TimerEventData
+{
+    std::string name;
+    uint32_t interval;
+    Timer* timer;
+};
+
 class Timer
 {
 public:
     Timer(const std::string& name);
     void setInterval(uint32_t ms);
     void setUserdata(void* userdata);
-    void enableLoop(bool loop);
-    void launch();
+    void start();
     void stop();
 
     static uint32_t GetTicks();
@@ -26,12 +34,12 @@ public:
 private:
     SDL_TimerID m_TimerID;
     std::string m_Name;
-    void* m_Userdata;
-    uint32_t m_Interval;
-    bool m_Loop;
-    static uint32_t m_PushTimerEvent(uint32_t interval, void* self);
-
     uint32_t m_Ticks;
+
+    uint32_t m_Interval;
+    void* m_Userdata;
+
+    static uint32_t m_PushTimerEvent(uint32_t interval, void* self);
 };
 
 }; // namespace Tsuki

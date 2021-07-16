@@ -7,27 +7,23 @@ namespace Tsuki
 
 Window::Window(const std::string& title, int width, int height, int x, int y)
 {
-    m_Window = SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-    if(m_Window == nullptr)
+    SDL_Window* window = SDL_CreateWindow(title.c_str(), x, y, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    if(window == nullptr)
     {
         throw RuntimeError("SDL_CreateWindow(%s, %d, %d, %d, %d, %d) : %s", 
                 title.c_str(), x, y, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN, SDL_GetError());
     }
+    m_Window = std::shared_ptr<SDL_Window>(window, SDL_DestroyWindow);
 }
 
 Window::~Window()
 {
-    if(m_Window == nullptr)
-    {
-        return;
-    }
-
-    SDL_DestroyWindow(m_Window);
+    
 }
 
 SDL_Window* Window::getRaw() const
 {
-    return m_Window;
+    return m_Window.get();
 }
 
 GLContext Window::createOpenGLContext() const
@@ -37,7 +33,7 @@ GLContext Window::createOpenGLContext() const
         throw NullError("SDL_Window is nullptr");
         return nullptr;
     }
-    GLContext ret = SDL_GL_CreateContext(m_Window);
+    GLContext ret = SDL_GL_CreateContext(m_Window.get());
     if(ret == nullptr)
     {
         throw RuntimeError("SDL_GL_CreateContext(%p) : %s", m_Window, SDL_GetError());
@@ -52,7 +48,7 @@ void Window::openGLPresent() const
         throw NullError("SDL_Window is nullptr");
         return;
     }
-    SDL_GL_SwapWindow(m_Window);
+    SDL_GL_SwapWindow(m_Window.get());
 }
 
 void Window::setTitle(const std::string& title)
@@ -63,7 +59,7 @@ void Window::setTitle(const std::string& title)
         return;
     }
 
-    SDL_SetWindowTitle(m_Window, title.c_str());
+    SDL_SetWindowTitle(m_Window.get(), title.c_str());
 }
 
 void Window::getTitle(std::string& title) const
@@ -74,7 +70,7 @@ void Window::getTitle(std::string& title) const
         return;
     }
 
-    title = SDL_GetWindowTitle(m_Window);
+    title = SDL_GetWindowTitle(m_Window.get());
 }
 
 void Window::setSize(int width, int height)
@@ -85,7 +81,7 @@ void Window::setSize(int width, int height)
         return;
     }
 
-    SDL_SetWindowSize(m_Window, width, height);
+    SDL_SetWindowSize(m_Window.get(), width, height);
 }
 
 void Window::getSize(int& width, int& height) const
@@ -96,7 +92,7 @@ void Window::getSize(int& width, int& height) const
         return;
     }
 
-    SDL_GetWindowSize(m_Window, &width, &height);
+    SDL_GetWindowSize(m_Window.get(), &width, &height);
 }
 
 void Window::setPos(int x, int y)
@@ -107,7 +103,7 @@ void Window::setPos(int x, int y)
         return;
     }
 
-    SDL_SetWindowPosition(m_Window, x, y);
+    SDL_SetWindowPosition(m_Window.get(), x, y);
 }
 
 void Window::getPos(int& x, int& y) const
@@ -118,7 +114,7 @@ void Window::getPos(int& x, int& y) const
         return;
     }
 
-    SDL_GetWindowPosition(m_Window, &x, &y);
+    SDL_GetWindowPosition(m_Window.get(), &x, &y);
 }
 
 void Window::show()
@@ -129,7 +125,7 @@ void Window::show()
         return;
     }
 
-    SDL_ShowWindow(m_Window);
+    SDL_ShowWindow(m_Window.get());
 }
 
 void Window::hide()
@@ -140,7 +136,7 @@ void Window::hide()
         return;
     }
 
-    SDL_HideWindow(m_Window);
+    SDL_HideWindow(m_Window.get());
 }
 
 void Window::focus()
@@ -151,7 +147,7 @@ void Window::focus()
         return;
     }
 
-    SDL_RaiseWindow(m_Window);
+    SDL_RaiseWindow(m_Window.get());
 }
 
 MessageBox::Button Window::messageBox(const std::string& title, const std::string& content, MessageBox::Type type)

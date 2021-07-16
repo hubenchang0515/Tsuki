@@ -24,7 +24,7 @@ void Timer::setUserdata(void* userdata)
     m_Userdata = userdata;
 }
 
-void Timer::launch()
+void Timer::start()
 {
     if(m_TimerID != 0)
     {
@@ -77,10 +77,15 @@ float Timer::delayFps(float fps)
 
 uint32_t Timer::m_PushTimerEvent(uint32_t interval, void* self)
 {
+    auto data = Event::createEventData<TimerEventData>();
+    data->timer = reinterpret_cast<Timer*>(self);
+    data->name = data->timer->m_Name;
+    data->interval = interval;
+    
+
     SDL_Event event;
     event.type = static_cast<uint32_t>(Event::Type::Timer);
-    event.user.data1 = self;
-    event.user.data2 = reinterpret_cast<void*>(interval);
+    event.user.data1 = data.get();
     SDL_PushEvent(&event);
     return interval;
 }

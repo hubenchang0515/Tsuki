@@ -6,19 +6,31 @@ namespace Tsuki
 Event::MessageBox::MessageBox(const Event& event) :  
     m_Event(event.m_Event.user)
 {
+    auto data = Event::unhold(event.m_Event.user.data1);
+    m_Data = std::static_pointer_cast<MessageBoxEventData>(data);
+}
+
+Event::MessageBox::~MessageBox()
+{
 
 }
 
-const std::string& Event::MessageBox::name()
+const std::string Event::MessageBox::name() const
 {
-    const std::string* str = reinterpret_cast<const std::string*>(const_cast<const void*>(m_Event.data1));
-    return *str;
+    if(m_Data == nullptr)
+    {
+        return "";
+    }
+    return m_Data->name;
 }
 
-Event::MessageBox::Button Event::MessageBox::button()
+Event::MessageBox::Button Event::MessageBox::button() const
 {
-    intptr_t buttonId = reinterpret_cast<intptr_t>(m_Event.data2);
-    return static_cast<Event::MessageBox::Button>(buttonId);
+    if(m_Data == nullptr)
+    {
+        return MessageBoxButton::None;
+    }
+    return m_Data->button;
 }
 
 }; // namespace Tsuki

@@ -45,7 +45,7 @@ public:
     MessageBox::Button messageBox(const std::string& title, const std::string& content, MessageBox::Type type=MessageBox::Type::Info);
 
 private:
-    SDL_Window* m_Window;
+    std::shared_ptr<SDL_Window> m_Window;
     int m_MessageBoxState;
 };
 

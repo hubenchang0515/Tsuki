@@ -23,13 +23,41 @@ public:
         MouseButtonUp = SDL_MOUSEBUTTONUP,
         MouseMove = SDL_MOUSEMOTION,
         MouseWheel = SDL_MOUSEWHEEL,
-        Timer = SDL_USEREVENT,
+        __Tsuki = SDL_USEREVENT,
+        Timer,
         MessageBox,
         User,
     };
 
     Event() = default;
     ~Event() = default;
+
+    /************************************************************************
+     * @brief 在事件循环中保存一个事件数据的指针
+     * @param[in] ptr 事件数据的指针
+     * @return 是否成功，失败表示存在相同的指针
+     * *********************************************************************/
+    static bool hold(const std::shared_ptr<void>& ptr);
+
+    /************************************************************************
+     * @brief 读取一个保存在事件循环中事件数据的指针，并将其从事件循环中移除
+     * @param[in] ptr 指针值
+     * @return 事件数据的指针
+     * *********************************************************************/
+    static std::shared_ptr<void> unhold(void* ptr);
+
+    /************************************************************************
+     * @brief 创建一个事件数据指针，并将其保存到事件循环中
+     * @param[in] T 事件数据的类型
+     * @return 事件数据的指针
+     * *********************************************************************/
+    template<typename T>
+    static std::shared_ptr<T> createEventData()
+    {
+        std::shared_ptr<T> sp = std::make_shared<T>();
+        hold(sp);
+        return sp;
+    }
 
     bool poll();
     bool wait();
@@ -52,7 +80,12 @@ public:
 
 private:
     SDL_Event m_Event;
-    std::map<Event::Type, std::function<void(Event&)> > m_Handlers;
+
+    // 事件处理函数表
+    std::map<Event::Type, std::function<void(Event&)>> m_Handlers;
+
+    // 保存在事件循环中的事件数据指针
+    static std::map<void*, std::shared_ptr<void>> m_Cache;
 };
 
 } // namespace Tsuki 

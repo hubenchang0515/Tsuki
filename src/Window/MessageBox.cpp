@@ -14,20 +14,32 @@ MessageBox::MessageBox(const std::string& name) noexcept:
 
 void MessageBox::show(const std::string& title, const std::string& content, Type type)
 {
-    Thread th(m_ShowMessageBox, m_Name, nullptr, title, content, type);
-    th.detach(); 
+    auto data = Event::createEventData<MessageBoxEventData>();
+    data->name = m_Name;
+    data->title = title;
+    data->content = content;
+    Thread th(m_ShowMessageBox, nullptr, data, type);
+    th.detach();
 }
 
 MessageBox::Button MessageBox::show(const Window* window, const std::string& title, const std::string& content, Type type)
 {
-    return m_ShowMessageBox(m_Name, window->getRaw(), title, content, type); 
+    auto data = Event::createEventData<MessageBoxEventData>();
+    data->name = m_Name;
+    data->name = m_Name;
+    data->title = title;
+    data->content = content;
+    return m_ShowMessageBox(window->getRaw(), data, type); 
 }
 
-MessageBox::Button MessageBox::m_ShowMessageBox(const std::string& name, SDL_Window* window, const std::string& title, const std::string& content, Type type)
+MessageBox::Button MessageBox::m_ShowMessageBox(SDL_Window* window, std::shared_ptr<MessageBoxEventData> data, Type type)
 {
+    std::unique_ptr<char> title(strdup(data->title.c_str()));
+    std::unique_ptr<char> content(strdup(data->content.c_str()));
+
     if(type < Type::Question)
     {
-        SDL_ShowSimpleMessageBox(static_cast<uint32_t>(type), title.c_str(), content.c_str(), window);
+        SDL_ShowSimpleMessageBox(static_cast<uint32_t>(type), title.get(), content.get(), window);
         return MessageBox::Button::None;
     }
     else
@@ -41,8 +53,8 @@ MessageBox::Button MessageBox::m_ShowMessageBox(const std::string& name, SDL_Win
         const SDL_MessageBoxData messageboxdata = {
             SDL_MESSAGEBOX_INFORMATION,
             window,
-            title.c_str(),
-            content.c_str(),
+            title.get(),
+            content.get(),
             3, 
             buttons,
             nullptr
@@ -50,11 +62,11 @@ MessageBox::Button MessageBox::m_ShowMessageBox(const std::string& name, SDL_Win
 
         int buttonID;
         SDL_ShowMessageBox(&messageboxdata, &buttonID);
+        data->button = static_cast<Button>(buttonID);
 
         SDL_Event event;
         event.type = static_cast<uint32_t>(Event::Type::MessageBox);
-        event.user.data1 = const_cast<void*>(reinterpret_cast<const void*>(&name));
-        event.user.data2 = reinterpret_cast<void*>(buttonID);
+        event.user.data1 = data.get();
         SDL_PushEvent(&event);
         return static_cast<MessageBox::Button>(buttonID);
     }

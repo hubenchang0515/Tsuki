@@ -14,13 +14,14 @@ public:
 
     MessageBox() = delete;
     MessageBox(const Event& event);
-    ~MessageBox() = default;
+    ~MessageBox();
 
-    const std::string& name();
-    Button button();
+    const std::string name() const;
+    Button button() const;
 
 private:
     const SDL_UserEvent& m_Event;
+    std::shared_ptr<MessageBoxEventData> m_Data;
 };
 
 }; // namespace Tsuki
